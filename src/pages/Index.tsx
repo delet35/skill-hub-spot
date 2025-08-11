@@ -1,14 +1,27 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { AppBar } from '@/components/layout/AppBar'
+import { SidebarCategories } from '@/components/layout/SidebarCategories'
+import { RightRail } from '@/components/layout/RightRail'
+import { Footer } from '@/components/layout/Footer'
+import { FiltersBar } from '@/components/market/FiltersBar'
+import { ListingGrid } from '@/components/market/ListingGrid'
+import { SEO } from '@/components/SEO'
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <SEO title="Knowledge Marketplace — Sell Knowledge & Experience" description="Discover and sell coaching, guides, templates, and courses." canonical="/" />
+      <AppBar />
+      <main className="container mx-auto grid grid-cols-12 gap-6 mt-6">
+        <div className="col-span-12 lg:col-span-3"><SidebarCategories /></div>
+        <section className="col-span-12 lg:col-span-6">
+          <FiltersBar />
+          <ListingGrid />
+        </section>
+        <div className="col-span-12 lg:col-span-3"><RightRail /></div>
+      </main>
+      <Footer />
     </div>
-  );
-};
+  )
+}
 
-export default Index;
+export default Index
