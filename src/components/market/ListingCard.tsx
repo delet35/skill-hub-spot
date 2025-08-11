@@ -17,11 +17,16 @@ export function ListingCard({ listing, seller }: Props) {
     <a href={`/listing/${listing.id}`} aria-label={listing.title} className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-lg">
       <Card className={cn('group overflow-hidden transition-transform duration-200 hover:translate-y-[-2px] hover:shadow-medium')}
         style={{ boxShadow: 'var(--shadow-soft)' }}>
-        <div className="aspect-[3/2] w-full overflow-hidden bg-muted">
+        <div className="relative aspect-[4/3] w-full overflow-hidden bg-muted">
           <img src={cover} alt={listing.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" loading="lazy" />
+          <span className="absolute top-2 left-2 text-xs px-2 py-0.5 rounded-md bg-accent text-accent-foreground shadow">
+            {priceText}
+          </span>
         </div>
         <CardContent className="p-3">
-          <div className="flex items-center justify-between mb-1">
+          <div className="mb-1">
+            <h3 className="font-medium leading-snug line-clamp-2 group-hover:underline decoration-accent/60 underline-offset-4">{listing.title}</h3>
+          </div>
             <h3 className="font-medium leading-snug line-clamp-2 group-hover:underline decoration-accent/60 underline-offset-4">{listing.title}</h3>
             <span className="text-xs px-2 py-0.5 rounded-full bg-accent text-accent-foreground whitespace-nowrap">{priceText}</span>
           </div>

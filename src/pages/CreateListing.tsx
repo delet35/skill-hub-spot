@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { ListingCard } from '@/components/market/ListingCard'
 import type { Listing } from '@/types'
+import ImageGalleryInput from '@/components/forms/ImageGalleryInput'
 
 const schema = z.object({
   title: z.string().min(5),
@@ -52,7 +53,7 @@ export default function CreateListing() {
     level: 'beginner',
     languages: ['en'],
     tags: ['preview', 'live'],
-    coverImages: [watch('cover')],
+    coverImages: images.length ? images : [watch('cover')],
     shortDesc: watch('shortDesc') || 'Short description will appear here.',
     longDesc: '',
     rating: 4.7,
@@ -129,8 +130,12 @@ export default function CreateListing() {
                 <Textarea id="shortDesc" rows={3} {...register('shortDesc')} />
               </div>
               <div>
-                <Label htmlFor="cover">Cover image URL</Label>
-                <Input id="cover" {...register('cover')} />
+                <Label>Images</Label>
+                <ImageGalleryInput value={images} onChange={setImages} />
+                <div className="mt-2">
+                  <Label htmlFor="cover">Or add a cover image URL</Label>
+                  <Input id="cover" {...register('cover')} />
+                </div>
               </div>
               {/* hidden inputs to sync selects */}
               <input type="hidden" id="currency" {...register('currency')} />

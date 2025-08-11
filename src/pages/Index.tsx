@@ -5,19 +5,21 @@ import { Footer } from '@/components/layout/Footer'
 import { FiltersBar } from '@/components/market/FiltersBar'
 import { ListingGrid } from '@/components/market/ListingGrid'
 import { SEO } from '@/components/SEO'
+import { useState } from 'react'
 
 const Index = () => {
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined)
   return (
     <div className="min-h-screen bg-background">
       <SEO title="Knowledge Marketplace — Sell Knowledge & Experience" description="Discover and sell coaching, guides, templates, and courses." canonical="/" />
       <AppBar />
-      <main className="container mx-auto grid grid-cols-12 gap-6 mt-6">
-        <div className="col-span-12 lg:col-span-3"><SidebarCategories /></div>
-        <section className="col-span-12 lg:col-span-6">
-          <FiltersBar />
+      <main className="container mx-auto grid gap-4 mt-6 lg:grid-cols-[280px_1fr_320px]">
+        <aside><SidebarCategories selectedCategoryId={selectedCategoryId} onSelectCategory={setSelectedCategoryId} /></aside>
+        <section>
+          <FiltersBar selectedCategoryId={selectedCategoryId} />
           <ListingGrid />
         </section>
-        <div className="col-span-12 lg:col-span-3"><RightRail /></div>
+        <aside><RightRail /></aside>
       </main>
       <Footer />
     </div>

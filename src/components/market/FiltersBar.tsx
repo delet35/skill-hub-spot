@@ -1,7 +1,15 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
+import categories from '@/data/categories'
 
-export function FiltersBar() {
+type Props = {
+  selectedCategoryId?: string
+}
+
+export function FiltersBar({ selectedCategoryId }: Props) {
+  const selectedCat = categories.find(c => c.id === selectedCategoryId)
+  const subs = selectedCat?.children ?? []
+
   return (
     <div className="flex flex-wrap items-center gap-3 py-3">
       <span className="text-sm font-medium">Today’s picks</span>
@@ -16,11 +24,20 @@ export function FiltersBar() {
           </SelectContent>
         </Select>
         <div className="hidden sm:flex items-center gap-2">
-          <Badge variant="secondary">Coaching</Badge>
+          <Badge variant="secondary">1:1</Badge>
           <Badge variant="secondary">Guide/PDF</Badge>
           <Badge variant="secondary">Template</Badge>
+          <Badge variant="secondary">Workshop</Badge>
+          <Badge variant="secondary">Course</Badge>
         </div>
       </div>
+      {subs.length > 0 && (
+        <div className="w-full flex flex-wrap items-center gap-2">
+          {subs.map((s) => (
+            <Badge key={s.id} variant="outline">{s.name}</Badge>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

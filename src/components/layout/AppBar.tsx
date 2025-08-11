@@ -4,9 +4,11 @@ import { Search, MessageSquare, Rocket, User2, Grid2X2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
+import { messageThreads } from '@/mocks/data'
 
 export function AppBar() {
   const { t } = useTranslation()
+  const unread = messageThreads.filter(t => t.unread).length
 
   const linkCls = ({ isActive }: { isActive: boolean }) =>
     cn(
@@ -38,7 +40,7 @@ export function AppBar() {
           <NavLink to="/" className={linkCls} end><Grid2X2 className="h-4 w-4" />{t('nav.browse')}</NavLink>
           <NavLink to="/profile/listings" className={linkCls}><User2 className="h-4 w-4" />{t('nav.myListings')}</NavLink>
           <NavLink to="/messages" className={linkCls}>
-            <span className="relative inline-flex items-center"><MessageSquare className="h-4 w-4" /><span className="ml-1">{t('nav.messages')}</span><span className="absolute -top-1 -right-2 text-[10px] leading-none bg-accent text-accent-foreground rounded-full px-1.5 py-0.5">1</span></span>
+            <span className="relative inline-flex items-center"><MessageSquare className="h-4 w-4" /><span className="ml-1">{t('nav.messages')}</span>{unread > 0 && (<span className="absolute -top-1 -right-2 text-[10px] leading-none bg-accent text-accent-foreground rounded-full px-1.5 py-0.5">{unread}</span>)}</span>
           </NavLink>
           <NavLink to="/boost" className={linkCls}><Rocket className="h-4 w-4" />{t('nav.boost')}</NavLink>
           <NavLink to="/login" className={linkCls}>{t('nav.login')}</NavLink>

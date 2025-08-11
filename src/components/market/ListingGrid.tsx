@@ -13,7 +13,7 @@ export function ListingGrid() {
   const { data } = useQuery({ queryKey: ['listings'], queryFn: fetchListings, initialData: seedListings })
 
   return (
-    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {data?.map((l) => (
         <ListingCard key={l.id} listing={l} seller={sellers.find(s => s.id === l.sellerId)} />
       ))}
