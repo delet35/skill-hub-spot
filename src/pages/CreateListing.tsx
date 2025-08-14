@@ -28,6 +28,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>
 
 export default function CreateListing() {
+  const [images, setImages] = useState<string[]>([])
   const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<FormValues>({
     mode: 'onChange',
     resolver: zodResolver(schema),

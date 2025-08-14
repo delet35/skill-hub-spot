@@ -27,9 +27,6 @@ export function ListingCard({ listing, seller }: Props) {
           <div className="mb-1">
             <h3 className="font-medium leading-snug line-clamp-2 group-hover:underline decoration-accent/60 underline-offset-4">{listing.title}</h3>
           </div>
-            <h3 className="font-medium leading-snug line-clamp-2 group-hover:underline decoration-accent/60 underline-offset-4">{listing.title}</h3>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-accent text-accent-foreground whitespace-nowrap">{priceText}</span>
-          </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             {seller && (
               <span className="inline-flex items-center gap-1">
