@@ -1,4 +1,8 @@
 # Welcome to your Lovable project
+## Hotfix: safe boot
+
+This hotfix adds an ErrorBoundary and debug banner so the app shows a friendly message instead of a blank screen if it crashes.
+
 
 ## Project info
 
