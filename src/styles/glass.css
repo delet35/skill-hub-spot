@@ -1,0 +1,22 @@
+:root{
+  --ink:#0D1B2A; --gold:#C2A878; --char:#2F3E46;
+}
+html,body,#root{height:100%}
+body{
+  margin:0;
+  background: radial-gradient(1200px 800px at 20% -10%, #FFFFFF 0%, #F6F3EE 60%, #EFE8DA 100%);
+  color:var(--ink);
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+.glass{background:rgba(255,255,255,.65); border:1px solid rgba(255,255,255,.35); backdrop-filter:blur(22px) saturate(160%); border-radius:16px; box-shadow:0 10px 30px rgba(13,27,42,.08)}
+.container{max-width:1280px; margin:0 auto; padding:20px 24px}
+.app-grid{display:grid; grid-template-columns:72px 1fr 320px; gap:16px}
+@media (max-width:1200px){ .app-grid{grid-template-columns:72px 1fr 280px} }
+@media (max-width:960px){ .app-grid{grid-template-columns:0 1fr 0} }
+.feed-grid{display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px}
+@media (max-width:1200px){ .feed-grid{grid-template-columns:repeat(3,minmax(0,1fr))} }
+@media (max-width:900px){ .feed-grid{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.card{overflow:hidden; transition:transform .12s ease, box-shadow .12s ease}
+.card:hover{transform:translateY(-4px); box-shadow:0 16px 36px rgba(13,27,42,.12)}
+.img-wrap{position:relative; aspect-ratio:4/3; overflow:hidden}
+.price-pill{position:absolute; top:8px; left:8px; padding:6px 10px; border-radius:16px; background:rgba(194,168,120,.9); color:#0D1B2A; font-weight:600; font-size:12px}

@@ -1,17 +1,12 @@
-import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import './i18n'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
 
-async function bootstrap() {
-  if (import.meta.env.DEV) {
-    const { worker } = await import('./mocks/browser')
-    await worker.start({ serviceWorker: { url: '/mockServiceWorker.js' } })
-  }
+const el = document.getElementById('root');
+if (!el) throw new Error('Missing #root');
 
-  const rootEl = document.getElementById('root')!
-  createRoot(rootEl).render(<App />)
-}
-
-bootstrap()
-
+ReactDOM.createRoot(el).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
