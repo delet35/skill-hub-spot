@@ -64,8 +64,8 @@ export default {
 				}
 			},
 			fontFamily: {
-				body: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-				display: ['"Playfair Display"', 'serif']
+				body: ['"SF Pro Text"', 'Inter', 'system-ui', 'sans-serif'],
+				display: ['"SF Pro Display"', 'Inter', 'system-ui', 'sans-serif']
 			},
 			boxShadow: {
 				soft: 'var(--shadow-soft)',

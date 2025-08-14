@@ -10,10 +10,10 @@ import { useState } from 'react'
 const Index = () => {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | undefined>(undefined)
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: 'var(--bg-1)' }}>
       <SEO title="Knowledge Marketplace — Sell Knowledge & Experience" description="Discover and sell coaching, guides, templates, and courses." canonical="/" />
       <AppBar />
-      <main className="container mx-auto grid gap-4 mt-6 lg:grid-cols-[280px_1fr_320px]">
+      <main className="container mx-auto grid gap-4 mt-6 lg:grid-cols-[72px_1fr_320px]">
         <aside><SidebarCategories selectedCategoryId={selectedCategoryId} onSelectCategory={setSelectedCategoryId} /></aside>
         <section>
           <FiltersBar selectedCategoryId={selectedCategoryId} />

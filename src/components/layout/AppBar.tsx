@@ -17,33 +17,43 @@ export function AppBar() {
     )
 
   return (
-    <header className="sticky top-0 z-40 bg-card/90 backdrop-blur border-b shadow-soft">
-      <nav aria-label="Main navigation" className="container mx-auto flex items-center gap-4 py-3">
-        <NavLink to="/" className="flex items-center gap-2 select-none" aria-label={t('brand.name')}>
-          <div className="h-9 w-9 rounded-md bg-accent text-accent-foreground grid place-items-center font-display text-base">{t('brand.monogram')}</div>
-          <span className="hidden sm:block font-display text-lg">{t('brand.name')}</span>
-        </NavLink>
-
-        <div className="flex-1 max-w-2xl mx-auto hidden md:flex items-center gap-2">
-          <div className="relative w-full">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden />
-            <Input
-              aria-label={t('search.placeholder')}
-              placeholder={t('search.placeholder')}
-              className="pl-9"
-            />
+    <header className="sticky top-0 z-50 p-6">
+      <nav className="glass-nav container mx-auto flex items-center justify-between px-6 py-4"
+        aria-label="Main navigation">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+              <span className="text-sm font-bold text-primary-foreground">KM</span>
+            </div>
           </div>
-          <Button variant="accent" size="default" aria-label="Search">{t('nav.browse')}</Button>
         </div>
 
-        <div className="ml-auto flex items-center gap-1">
-          <NavLink to="/" className={linkCls} end><Grid2X2 className="h-4 w-4" />{t('nav.browse')}</NavLink>
-          <NavLink to="/profile/listings" className={linkCls}><User2 className="h-4 w-4" />{t('nav.myListings')}</NavLink>
-          <NavLink to="/messages" className={linkCls}>
-            <span className="relative inline-flex items-center"><MessageSquare className="h-4 w-4" /><span className="ml-1">{t('nav.messages')}</span>{unread > 0 && (<span className="absolute -top-1 -right-2 text-[10px] leading-none bg-accent text-accent-foreground rounded-full px-1.5 py-0.5">{unread}</span>)}</span>
+        <div className="flex-1 max-w-lg mx-6">
+          <div className="relative">
+            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <input
+              type="search"
+              placeholder={t('search.placeholder')}
+              className="w-full pl-12 pr-6 py-3 glass-surface rounded-3xl border-0 focus:ring-2 focus:ring-primary text-sm"
+              aria-label={t('search.label')}
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <NavLink to="/browse" className="glass-chip px-3 py-1.5 text-sm">Browse</NavLink>
+          <NavLink to="/profile/listings" className={linkCls}>{t('nav.myListings')}</NavLink>
+          <NavLink to="/profile/listings?tab=active" className={linkCls}>Active</NavLink>
+          <NavLink to="/messages" className={cn(linkCls, 'relative')}>
+            {t('nav.messages')}
+            {unread > 0 && (
+              <span className="absolute -top-1 -right-1 h-4 w-4 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center">
+                {unread > 9 ? '9+' : unread}
+              </span>
+            )}
           </NavLink>
-          <NavLink to="/boost" className={linkCls}><Rocket className="h-4 w-4" />{t('nav.boost')}</NavLink>
-          <NavLink to="/login" className={linkCls}>{t('nav.login')}</NavLink>
+          <NavLink to="/boost" className={linkCls}>{t('nav.boostCredits')}</NavLink>
+          <NavLink to="/login" className="glass-chip px-3 py-1.5 text-sm">{t('auth.login')}</NavLink>
         </div>
       </nav>
     </header>

@@ -2,116 +2,126 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    /* Knowledge Marketplace Theme — Old Manly Creaminess */
-    /* Brand palette (HSL) */
-    --km-cream: 38 44% 93%;     /* #F5F0E6 */
-    --km-ink: 211 53% 11%;      /* #0D1B2A */
-    --km-olive: 86 10% 40%;     /* #6B705C approx */
-    --km-gold: 39 37% 62%;      /* #C2A878 */
-    --km-char: 203 20% 23%;     /* #2F3E46 */
-
+    /* Glass/Minimal Design System */
+    --bg-0: 40 33% 96%;
+    --bg-1: radial-gradient(1200px 800px at 20% -10%, #FFFFFF 0%, #F6F3EE 60%, #EFE8DA 100%);
+    
+    /* Glass surface tokens */
+    --glass-bg: rgba(255, 255, 255, 0.65);
+    --glass-border: rgba(255, 255, 255, 0.35);
+    --glass-shadow: 0 10px 30px rgba(13, 27, 42, 0.08);
+    --glass-blur: blur(22px) saturate(160%);
+    
+    /* Core colors */
+    --ink: 200 89% 18%;
+    --gold: 33 23% 69%;
+    --charcoal: 200 6% 15%;
+    --divider: rgba(13, 27, 42, 0.08);
+    
     /* Semantic tokens */
-    --background: var(--km-cream);
-    --foreground: var(--km-ink);
-
-    --card: var(--km-cream);
-    --card-foreground: var(--km-ink);
-
-    --popover: var(--km-cream);
-    --popover-foreground: var(--km-ink);
-
-    --primary: var(--km-ink);
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 38 30% 88%; /* soft cream tint */
-    --secondary-foreground: var(--km-ink);
-
-    --muted: 38 25% 86%;
-    --muted-foreground: 210 10% 35%;
-
-    --accent: var(--km-gold);
-    --accent-foreground: 222 47% 11%;
-
-    --destructive: 0 63% 46%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 38 20% 80%;
-    --input: 38 20% 80%;
-    --ring: var(--km-gold);
-
-    --radius: 0.75rem; /* 12px */
-
-    /* Sidebar tokens */
-    --sidebar-background: 38 44% 95%;
-    --sidebar-foreground: var(--km-char);
-    --sidebar-primary: var(--km-ink);
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 38 35% 90%;
-    --sidebar-accent-foreground: var(--km-ink);
-    --sidebar-border: 38 20% 80%;
-    --sidebar-ring: var(--km-gold);
-
-    /* Elevation */
-    --shadow-soft: 0 8px 24px hsl(211 53% 11% / 0.06), 0 2px 6px hsl(203 20% 23% / 0.04);
-    --shadow-medium: 0 12px 30px hsl(211 53% 11% / 0.08), 0 4px 10px hsl(203 20% 23% / 0.06);
+    --background: var(--bg-0);
+    --foreground: var(--ink);
+    --card: 0 0% 100%;
+    --card-foreground: var(--ink);
+    --popover: 0 0% 100%;
+    --popover-foreground: var(--ink);
+    --primary: var(--gold);
+    --primary-foreground: var(--ink);
+    --secondary: 39 39% 95%;
+    --secondary-foreground: var(--charcoal);
+    --muted: 39 39% 95%;
+    --muted-foreground: var(--charcoal);
+    --accent: var(--gold);
+    --accent-foreground: var(--ink);
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 39 20% 88%;
+    --input: 39 20% 88%;
+    --ring: var(--gold);
+    --radius: 1rem;
+    
+    /* Shadows */
+    --shadow-soft: var(--glass-shadow);
+    --shadow-medium: 0 16px 40px rgba(13, 27, 42, 0.12);
+    
+    /* Focus ring */
+    --focus-ring: 2px solid hsl(var(--gold));
   }
 
   .dark {
-    --background: 222.2 20% 9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 20% 11%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 20% 11%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 22% 18%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 22% 18%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: var(--km-gold);
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 22% 22%;
-    --input: 217.2 22% 22%;
-    --ring: var(--km-gold);
-
-    --sidebar-background: 222.2 20% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border;
+    --background: var(--ink);
+    --foreground: 39 39% 95%;
+    --card: var(--charcoal);
+    --card-foreground: 39 39% 95%;
+    --popover: var(--charcoal);
+    --popover-foreground: 39 39% 95%;
+    --primary: var(--gold);
+    --primary-foreground: var(--ink);
+    --secondary: 39 20% 84%;
+    --secondary-foreground: var(--ink);
+    --muted: var(--charcoal);
+    --muted-foreground: 39 20% 84%;
+    --accent: var(--gold);
+    --accent-foreground: var(--ink);
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 98%;
+    --border: var(--charcoal);
+    --input: var(--charcoal);
+    --ring: var(--gold);
   }
 
   body {
-    @apply bg-background text-foreground font-body;
+    background: var(--bg-1);
+    font-family: "SF Pro Text", "Inter", system-ui, sans-serif;
+    letter-spacing: 0.2px;
+    line-height: 1.4;
   }
 
-  h1,h2,h3,h4,h5,h6 {
-    @apply font-display;
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+    letter-spacing: 0.2px;
+  }
+
+  /* Glass component base */
+  .glass-surface {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--glass-shadow);
+  }
+
+  .glass-nav {
+    @apply glass-surface;
+    border-radius: 20px;
+  }
+
+  .glass-card {
+    @apply glass-surface;
+    border-radius: 16px;
+  }
+
+  .glass-chip {
+    @apply glass-surface;
+    border-radius: 12px;
+  }
+
+  /* Focus styles */
+  .focus-visible:focus-visible {
+    outline: var(--focus-ring);
+    outline-offset: 2px;
+  }
+
+  /* Animations */
+  .micro-transition {
+    transition: all 120ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .micro-transition {
+      transition: none;
+    }
   }
 }
