@@ -1,165 +1,146 @@
-import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { AppBar } from '@/components/layout/AppBar'
-import { Footer } from '@/components/layout/Footer'
-import { SEO } from '@/components/SEO'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
-import { Button } from '@/components/ui/button'
-import { ListingCard } from '@/components/market/ListingCard'
-import type { Listing } from '@/types'
-import ImageGalleryInput from '@/components/forms/ImageGalleryInput'
+import React, { useMemo, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import ImagePicker, { ImageSource } from '../components/ImagePicker';
+import { createListing, uploadImages, CreateListingDto } from '../api/listings';
+import { useMutation } from '@tanstack/react-query';
+import GlassCard from '../components/GlassCard';
+import { ListingFormat, DeliveryMethod, Level } from '../types/marketplace';
 
 const schema = z.object({
-  title: z.string().min(5),
-  price: z.string().regex(/^\d+$|^free$/i, 'Enter number or "free"'),
-  currency: z.enum(['USD', 'EUR', 'ILS']),
-  format: z.enum(['coaching', 'guide', 'template', 'workshop', 'course']),
-  deliveryMethod: z.enum(['download', 'video_call', 'chat', 'link']),
-  shortDesc: z.string().min(10),
-  cover: z.string().url(),
-})
+  title: z.string().min(3).max(60),
+  price: z.number().nonnegative(),
+  currency: z.enum(['USD','EUR','ILS','GBP']),
+  categoryId: z.string().min(1),
+  format: z.enum(['Coaching_1on1','Guide_PDF','Template_Asset','Live_Workshop','Video_Course']),
+  deliveryMethod: z.enum(['Download','Video_Call','Chat','External_Link']),
+  level: z.enum(['Beginner','Intermediate','Advanced']),
+  shortDesc: z.string().min(10).max(160),
+  longDesc: z.string().min(20),
+});
 
-type FormValues = z.infer<typeof schema>
+type FormValues = z.infer<typeof schema>;
 
-export default function CreateListing() {
-  const [images, setImages] = useState<string[]>([])
-  const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm<FormValues>({
-    mode: 'onChange',
+type UploadImage = Extract<ImageSource, { kind: 'upload' }>;
+type UrlImage = Extract<ImageSource, { kind: 'url' }>;
+
+export default function CreateListing(){
+  const [images, setImages] = useState<ImageSource[]>([]);
+  const { register, handleSubmit, formState:{errors, isValid}, watch, setError } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: {
-      title: '',
-      price: 'free',
-      currency: 'USD',
-      format: 'coaching',
-      deliveryMethod: 'video_call',
-      shortDesc: '',
-      cover: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?q=80&w=1200&auto=format&fit=crop'
+    mode: 'onChange',
+    defaultValues: { currency:'USD', price: 0, format:'Guide_PDF' as ListingFormat, deliveryMethod:'Download' as DeliveryMethod, level:'Beginner' as Level }
+  });
+
+  const firstPreview = useMemo(()=> images[0]?.previewUrl, [images]);
+
+  const mutation = useMutation({
+    mutationFn: async (v: FormValues) => {
+      const uploadFiles = images.filter((i): i is UploadImage => i.kind === 'upload').map(i => i.file);
+      const urlImages = images.filter((i): i is UrlImage => i.kind === 'url').map(i => i.url);
+      const uploaded = uploadFiles.length ? await uploadImages(uploadFiles) : [];
+      const payload: CreateListingDto = {
+        ...v,
+        coverImages: [...uploaded, ...urlImages],
+        languages: ['English'],
+        tags: [],
+      };
+      return createListing(payload);
     }
-  })
+  });
 
-  const preview: Listing = useMemo(() => ({
-    id: 'preview',
-    title: watch('title') || 'Your amazing listing title goes here',
-    price: /free/i.test(watch('price')) ? 0 : Number(watch('price') || 0),
-    currency: watch('currency'),
-    categoryId: 'product',
-    format: watch('format'),
-    deliveryMethod: watch('deliveryMethod'),
-    level: 'beginner',
-    languages: ['en'],
-    tags: ['preview', 'live'],
-    coverImages: images.length ? images : [watch('cover')],
-    shortDesc: watch('shortDesc') || 'Short description will appear here.',
-    longDesc: '',
-    rating: 4.7,
-    sales: 0,
-    sellerId: 's1',
-    status: 'draft',
-    boosted: false,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }), [watch])
-
-  const onSubmit = (values: FormValues) => {
-    // placeholder publish flow
-    alert('Draft saved! (stub)')
-  }
+  const onSubmit = (v: FormValues) => {
+    if (images.length === 0) {
+      setError('title', { message: 'Add at least one image' });
+      return;
+    }
+    mutation.mutate(v);
+  };
 
   return (
-    <div className="min-h-screen bg-background">
-      <SEO title="Create Listing — Knowledge Marketplace" description="Create a new listing with live preview." canonical="/create" />
-      <AppBar />
-      <main className="container mx-auto grid grid-cols-12 gap-6 mt-6">
-        <form className="col-span-12 lg:col-span-7 space-y-4" onSubmit={handleSubmit(onSubmit)} aria-label="Create listing form">
-          <Card className="shadow-soft">
-            <CardHeader><CardTitle>Basics</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label htmlFor="title">Title</Label>
-                <Input id="title" {...register('title')} aria-invalid={!!errors.title} />
-              </div>
-              <div className="grid grid-cols-3 gap-3">
-                <div>
-                  <Label htmlFor="price">Price</Label>
-                  <Input id="price" placeholder="free or number" {...register('price')} aria-invalid={!!errors.price} />
-                </div>
-                <div>
-                  <Label>Currency</Label>
-                  <Select defaultValue="USD" onValueChange={(v) => (document.getElementById('currency') as HTMLInputElement).value = v}>
-                    <SelectTrigger id="currency"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-card">
-                      <SelectItem value="USD">USD</SelectItem>
-                      <SelectItem value="EUR">EUR</SelectItem>
-                      <SelectItem value="ILS">ILS</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label>Format</Label>
-                  <Select defaultValue="coaching" onValueChange={(v) => (document.getElementById('format') as HTMLInputElement).value = v}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-card">
-                      <SelectItem value="coaching">1:1 Coaching</SelectItem>
-                      <SelectItem value="guide">Guide/PDF</SelectItem>
-                      <SelectItem value="template">Template/Asset</SelectItem>
-                      <SelectItem value="workshop">Live Workshop</SelectItem>
-                      <SelectItem value="course">Video Course</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div>
-                <Label>Delivery Method</Label>
-                <Select defaultValue="video_call" onValueChange={(v) => (document.getElementById('deliveryMethod') as HTMLInputElement).value = v}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent className="bg-card">
-                    <SelectItem value="download">Download</SelectItem>
-                    <SelectItem value="video_call">1:1 Video Call</SelectItem>
-                    <SelectItem value="chat">Chat Mentoring</SelectItem>
-                    <SelectItem value="link">Link</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="shortDesc">Short Description</Label>
-                <Textarea id="shortDesc" rows={3} {...register('shortDesc')} />
-              </div>
-              <div>
-                <Label>Images</Label>
-                <ImageGalleryInput value={images} onChange={setImages} />
-                <div className="mt-2">
-                  <Label htmlFor="cover">Or add a cover image URL</Label>
-                  <Input id="cover" {...register('cover')} />
-                </div>
-              </div>
-              {/* hidden inputs to sync selects */}
-              <input type="hidden" id="currency" {...register('currency')} />
-              <input type="hidden" id="format" {...register('format')} />
-              <input type="hidden" id="deliveryMethod" {...register('deliveryMethod')} />
-            </CardContent>
-          </Card>
-          <div className="flex items-center gap-3">
-            <Button type="button" variant="outline">Save Draft</Button>
-            <Button type="submit" variant="accent" disabled={!isValid}>Publish</Button>
+    <div className="container grid grid-cols-[520px_1fr] gap-4 max-[1100px]:grid-cols-1">
+      <GlassCard className="p-4">
+        <h2 className="text-xl font-semibold mb-3">Create Listing</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
+          <label className="block">
+            <span>Title</span>
+            <input className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('title')} />
+            {errors.title && <div className="text-red-700">{errors.title.message}</div>}
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block">
+              <span>Price</span>
+              <input type="number" className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('price', { valueAsNumber:true })} />
+            </label>
+            <label className="block">
+              <span>Currency</span>
+              <select className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('currency')}>
+                <option>USD</option><option>EUR</option><option>ILS</option><option>GBP</option>
+              </select>
+            </label>
           </div>
+          <label className="block">
+            <span>Category</span>
+            <input className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('categoryId')} />
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block">
+              <span>Format</span>
+              <select className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('format')}>
+                <option value="Coaching_1on1">1:1 Coaching</option>
+                <option value="Guide_PDF">Guide/PDF</option>
+                <option value="Template_Asset">Template/Asset</option>
+                <option value="Live_Workshop">Live Workshop</option>
+                <option value="Video_Course">Video Course</option>
+              </select>
+            </label>
+            <label className="block">
+              <span>Delivery</span>
+              <select className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('deliveryMethod')}>
+                <option value="Download">Download</option>
+                <option value="Video_Call">Video Call</option>
+                <option value="Chat">Chat</option>
+                <option value="External_Link">External Link</option>
+              </select>
+            </label>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="block">
+              <span>Level</span>
+              <select className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('level')}>
+                <option>Beginner</option><option>Intermediate</option><option>Advanced</option>
+              </select>
+            </label>
+            <label className="block">
+              <span>Short Description</span>
+              <input className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('shortDesc')} />
+            </label>
+          </div>
+          <label className="block">
+            <span>Long Description</span>
+            <textarea rows={6} className="w-full px-3 py-2 rounded-lg border border-white/40 bg-white/70" {...register('longDesc')} />
+          </label>
+          <div>
+            <span>Images</span>
+            <ImagePicker value={images} onChange={setImages} />
+          </div>
+          <button disabled={!isValid || mutation.isPending} className="px-4 py-3 rounded-xl bg-gold/90 text-ink font-semibold disabled:opacity-50">Publish</button>
+          {mutation.isSuccess && <div className="text-green-700">Published!</div>}
+          {mutation.isError && <div className="text-red-700">{(mutation.error as Error)?.message}</div>}
         </form>
+      </GlassCard>
 
-        <aside className="col-span-12 lg:col-span-5 space-y-3">
-          <Card className="shadow-soft">
-            <CardHeader><CardTitle>Live Preview</CardTitle></CardHeader>
-            <CardContent>
-              <ListingCard listing={preview} />
-            </CardContent>
-          </Card>
-        </aside>
-      </main>
-      <Footer />
+      <GlassCard className="p-4">
+        <h3 className="font-semibold mb-2">Preview</h3>
+        <div className="card">
+          <div className="img-wrap">
+            <img src={firstPreview || 'https://images.unsplash.com/photo-1551434678-e076c223a692?q=80&w=800&auto=format&fit=crop'} alt="Preview" className="w-full h-full object-cover" />
+            <div className="price-pill">{watch('price') ? `USD ${watch('price')}` : '—'}</div>
+          </div>
+          <div className="p-3 font-semibold">{watch('title') || 'Your title appears here…'}</div>
+        </div>
+      </GlassCard>
     </div>
-  )
+  );
 }

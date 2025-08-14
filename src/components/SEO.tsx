@@ -4,7 +4,7 @@ type SEOProps = {
   title: string
   description?: string
   canonical?: string
-  jsonLd?: Record<string, any>
+  jsonLd?: Record<string, unknown>
 }
 
 export function SEO({ title, description, canonical = '/', jsonLd }: SEOProps) {

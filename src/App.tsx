@@ -1,41 +1,29 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import Browse from "./pages/Browse";
-import NotFound from "./pages/NotFound";
+import React from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Landing from "./pages/Landing";
 import ListingDetail from "./pages/ListingDetail";
 import CreateListing from "./pages/CreateListing";
-import EditListing from "./pages/EditListing";
-import Messages from "./pages/Messages";
-import MyListings from "./pages/MyListings";
-import Login from "./pages/Login";
 
-const queryClient = new QueryClient();
+export default function App() {
+  // Keep columns order fixed even in RTL
+  document.documentElement.dir = document.documentElement.dir || "ltr";
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+  return (
+    <ErrorBoundary>
       <BrowserRouter>
+        <nav style={{position:'sticky', top:0, padding:'8px 12px'}}>
+          <Link to="/" style={{marginRight:12}}>Home</Link>
+          <Link to="/create">Create</Link>
+        </nav>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/browse" element={<Browse />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/listing/:id" element={<ListingDetail />} />
           <Route path="/create" element={<CreateListing />} />
-          <Route path="/edit/:id" element={<EditListing />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/profile/listings" element={<MyListings />} />
-          <Route path="/login" element={<Login />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
+          {/* Fallback to avoid blank page on bad routes */}
+          <Route path="*" element={<div style={{padding:24}}>Not found</div>} />
         </Routes>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+    </ErrorBoundary>
+  );
+}
